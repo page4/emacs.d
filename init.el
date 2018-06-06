@@ -7,16 +7,15 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
-;; '(doc-view-continuous t)
  '(package-selected-packages
    (quote
-    (solarized-theme org-link-minor-mode pyim tuareg evil evil-leader))))
+    (org-journal solarized-theme org-link-minor-mode pyim tuareg evil evil-leader))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(default ((t (:family "Microsoft YaHei UI Light" :foundry "MS  " :slant normal :weight normal :height 158 :width normal)))))
+ '(default ((t (:family "Microsoft YaHei UI Light" :foundry "MS  " :slant normal :weight normal :height 137 :width normal)))))
 
 ;; add package archives
 (require 'package)
@@ -37,7 +36,6 @@
 (require 'solarized-theme)
 (load-theme 'solarized-dark t) 
 ;;(load-theme 'solarized-light t) 
-
 
 ;; evil and evil-leader
 (require 'evil-leader)
@@ -72,6 +70,17 @@
    (progn (delete-other-windows)
 	  (split-window-right)
 	  (shell)))
+
+(defun preview-html ()
+  (interactive)
+  (let ((buffer (get-buffer-create "*Org HTML Export*")))
+    (org-html-export-as-html)
+    (shr-render-buffer  buffer)
+    (kill-buffer buffer)
+    (delete-other-windows)))
+
+(evil-leader/set-key
+  "ph" 'preview-html)
 
 (global-set-key "\C-D" 'open-shell-on-right)
 
