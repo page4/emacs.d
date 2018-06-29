@@ -9,7 +9,7 @@
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
    (quote
-    (org-journal solarized-theme org-link-minor-mode pyim tuareg evil evil-leader))))
+    (projectile neotree jdee htmlize org-journal solarized-theme org-link-minor-mode pyim tuareg evil evil-leader))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -27,7 +27,7 @@
 
 ;; set faces
 (scroll-bar-mode -1)
-(tool-bar-mode)
+(tool-bar-mode nil)
 ;;(transient-mark-mode nil) 
 
 ;; auto save sessions
@@ -103,4 +103,34 @@
 
 (global-set-key (kbd "C-SPC") 'toggle-input-method)
 
+(setq neo-smart-open t)
+(evil-define-key 'normal neotree-mode-map (kbd "TAB") 'neotree-enter)
+(evil-define-key 'normal neotree-mode-map (kbd "SPC") 'neotree-quick-look)
+(evil-define-key 'normal neotree-mode-map (kbd "q") 'neotree-hide)
+(evil-define-key 'normal neotree-mode-map (kbd "RET") 'neotree-enter)
 
+(setq projectile-switch-project-action 'neotree-projectile-action)
+
+(defun neotree-project-dir ()
+  "Open NeoTree using the git root."
+  (interactive)
+  (let ((project-dir (ignore-errors (projectile-project-root)))
+	(file-name (buffer-file-name)))
+    (neotree-show)
+    (if project-dir
+	(if (neo-global--window-exists-p)
+	    (progn
+	      (neotree-dir project-dir)
+	      (neotree-find file-name)))
+      (message "Could not find git project root."))))
+
+(defun neotree-file () 
+  (interactive)
+  (progn
+    (projectile-find-file)
+    (neotree-project-dir)))
+
+(evil-leader/set-key
+  "nt" 'neotree-toggle
+  "nr" 'neotree-project-dir
+  "nf" 'neotree-file)
